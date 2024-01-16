@@ -6,11 +6,9 @@ function closeByEsc(evt) {
 }  
 
 function closeByMouse(evt) {
-    console.log('test');
     const openedPopup = document.querySelector('.popup_is-opened');
     const closeButton = openedPopup.querySelector('.popup__close');
-    const submitButton = openedPopup.querySelector('.popup__button');
-    if(evt.target == closeButton || evt.target == submitButton || evt.target == openedPopup)
+    if(evt.target == closeButton || evt.target == openedPopup)
         closeModal(openedPopup);
 }
 
