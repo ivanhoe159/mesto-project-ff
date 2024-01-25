@@ -22,11 +22,6 @@ const placeName = page.querySelector('.popup__input_type_card-name');
 const linkURL = page.querySelector('.popup__input_type_url');
 const cardTemplate = page.querySelector('#card-template');
 
-//some training
-
-const its = [];
-console.log(its.pop());
-
 function clickCard(initialCard) {
   popupImage.src = initialCard.link;
   popupImage.alt = initialCard.name;
