@@ -1,6 +1,6 @@
 import '../styles/index.css'; 
 import {initialCards} from '../src/components/cards.js'
-import {addCard, deleteCard} from '../src/components/card.js';
+import {addCard} from '../src/components/card.js';
 import {openModal, closeModal} from '../src/components/modal.js';
 
 const page = document.querySelector('.page');
@@ -22,10 +22,15 @@ const placeName = page.querySelector('.popup__input_type_card-name');
 const linkURL = page.querySelector('.popup__input_type_url');
 const cardTemplate = page.querySelector('#card-template');
 
-function clickCard(cardImage) {
-  popupImage.src = cardImage.src;
-  popupImage.alt = cardImage.alt;
-  popupCaption.textContent = cardImage.alt;
+//some training
+
+const its = [];
+console.log(its.pop());
+
+function clickCard(initialCard) {
+  popupImage.src = initialCard.link;
+  popupImage.alt = initialCard.name;
+  popupCaption.textContent = initialCard.name;
   openModal(imagePopup);
 };  
 
@@ -42,7 +47,7 @@ function cardFormSubmit(evt) {
     name: placeName.value,
     link: linkURL.value
   };
-  const newCard = addCard(cardTemplate, card, deleteCard, clickCard);
+  const newCard = addCard(cardTemplate, card, clickCard);
   placesList.prepend(newCard);
   closeModal(newCardPopup);
 }
@@ -65,9 +70,8 @@ addButton.addEventListener('click', function(evt) {
 });
 
 initialCards.forEach(card => {
-    const newCard = addCard(cardTemplate, card, deleteCard, clickCard);
+    const newCard = addCard(cardTemplate, card, clickCard);
     placesList.append(newCard);
 })
-
 
 
