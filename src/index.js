@@ -67,6 +67,7 @@ function submitProfileForm(evt) {
   editPopup.querySelector('.popup__button').textContent = "Сохранение...";
   editProfile(nameInput, jobInput)
   .then((result) => {
+    closeModal(editPopup);
     profileTitle.textContent = result.name;
     profileDesc.textContent = result.about;
     clearValidation(editPopup, validationConfig);
@@ -75,7 +76,6 @@ function submitProfileForm(evt) {
     console.log(err); 
   }) 
   .finally(() => {
-    closeModal(editPopup);
     editPopup.querySelector('.popup__button').textContent = "Сохранить";
   })
 }
@@ -85,6 +85,7 @@ function submitCardForm(evt) {
   newCardPopup.querySelector('.popup__button').textContent = "Сохранение...";
   loadNewCard(placeName, linkURL)
   .then((result) => {
+    closeModal(newCardPopup);
     const newCard = addCard(cardTemplate, result, clickCard, likeCard, deleteCard, userID);
     placesList.prepend(newCard);
     clearValidation(newCardPopup, validationConfig);
@@ -93,7 +94,6 @@ function submitCardForm(evt) {
     console.log(err); 
   })
   .finally(() => {
-    closeModal(newCardPopup);
     newCardPopup.querySelector('.popup__button').textContent = "Сохранить";
   })
 }
@@ -103,6 +103,7 @@ function submitAvatarForm(evt) {
   avatarPopup.querySelector('.popup__button').textContent = "Сохранение...";
   loadNewAvatar(avatarURL)
   .then((result) => {
+    closeModal(avatarPopup);
     profileImage.style.backgroundImage = `url('${result.avatar}')`;
     clearValidation(avatarPopup, validationConfig);
   })
@@ -110,7 +111,6 @@ function submitAvatarForm(evt) {
     console.log(err); 
   })
   .finally(() => {
-    closeModal(avatarPopup);
     avatarPopup.querySelector('.popup__button').textContent = "Сохранить";
   })
 }

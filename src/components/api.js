@@ -13,7 +13,6 @@ const config = {
       headers: config.headers
     })
     .then(checkResponse)
-    .catch((err) => {console.log(err)}); 
   }
 
   export function loadCards() {
@@ -21,7 +20,6 @@ const config = {
        headers: config.headers
     })
     .then(checkResponse)
-    .catch((err) => {console.log(err)}); 
   }
 
   export function editProfile(nameInput, jobInput) {
@@ -34,7 +32,6 @@ const config = {
         })
       })
       .then(checkResponse)
-      .catch((err) => {console.log(err)}); 
   }
 
   export function loadNewCard(placeName, linkURL) {
@@ -46,8 +43,7 @@ const config = {
         }),
         headers: config.headers
       })
-      .then(checkResponse)
-      .catch((err) => {console.log(err)}); 
+      .then(checkResponse) 
   }
 
   export function loadNewAvatar(avatarURL) {
@@ -59,7 +55,6 @@ const config = {
         })
       })
       .then(checkResponse)
-      .catch((err) => {console.log(err)}); 
   }
 
   export function removeCard(cardID) {
@@ -68,7 +63,6 @@ const config = {
       headers: config.headers
     })
     .then(checkResponse)
-    .catch((err) => {console.log(err)}); 
   }
 
   export function putLike(cardID) {
@@ -77,7 +71,6 @@ const config = {
       headers: config.headers
     })
     .then(checkResponse)
-    .catch((err) => {console.log(err)}); 
   }
 
   export function removeLike(cardID) {
@@ -86,5 +79,4 @@ const config = {
       headers: config.headers
     })
     .then(checkResponse)
-    .catch((err) => {console.log(err)}); 
   }
