@@ -1,8 +1,8 @@
 import '../styles/index.css'; 
-import {addCard} from '../src/components/card.js';
+import {addCard, deleteCard, likeCard} from '../src/components/card.js';
 import {openModal, closeModal} from '../src/components/modal.js';
 import {enableValidation, clearValidation} from '../src/components/validation.js';
-import {loadUser, loadCards, editProfile, newCard, newAvatar} from '../src/components/api.js';
+import {loadUser, loadCards, editProfile, loadNewCard, loadNewAvatar} from '../src/components/api.js';
 
 const page = document.querySelector('.page');
 const profileTitle = page.querySelector('.profile__title');
@@ -31,34 +31,29 @@ const validationConfig = {
   formSelector: '.popup__form',
   inputSelector: '.popup__input',
   submitButtonSelector: '.popup__button',
+  noSymbolsSelector: 'popup__input-nosymbol',
   inputErrorClass: 'popup__input_error',
   errorClass: 'popup__error'
 }
+let userID;
 
 enableValidation(validationConfig);
 
-loadUser()
-  .then((result) => {
-    profileTitle.textContent = result.name;
-    profileDesc.textContent = result.about;
-    profileImage.style.backgroundImage = `url('${result.avatar}')`;
-  })
-  .catch((err) => {
-    console.log(err); 
-  }); 
 
-
-loadCards()
-  .then((result) => {
-    result.forEach(card => {
-      const newCard = addCard(cardTemplate, card, clickCard);
+Promise.all([loadUser(), loadCards()])
+  .then(([userData, cards]) => {
+    userID = userData._id;
+    profileTitle.textContent = userData.name;
+    profileDesc.textContent = userData.about;
+    profileImage.style.backgroundImage = `url('${userData.avatar}')`;
+    cards.forEach(card => {
+      const newCard = addCard(cardTemplate, card, clickCard, likeCard, deleteCard, userID);
       placesList.append(newCard);
     })
-  }) 
-  .catch((err) => {
+  })
+  .catch(err => {
     console.log(err); 
-  }); 
-
+  });
 
 function clickCard(initialCard) {
   popupImage.src = initialCard.link;
@@ -67,53 +62,62 @@ function clickCard(initialCard) {
   openModal(imagePopup);
 };  
 
-function profileFormSubmit(evt) {
+function submitProfileForm(evt) {
   evt.preventDefault(); 
   editPopup.querySelector('.popup__button').textContent = "Сохранение...";
   editProfile(nameInput, jobInput)
   .then((result) => {
     profileTitle.textContent = result.name;
     profileDesc.textContent = result.about;
-    closeModal(editPopup);
     clearValidation(editPopup, validationConfig);
   })
   .catch((err) => {
     console.log(err); 
   }) 
+  .finally(() => {
+    closeModal(editPopup);
+    editPopup.querySelector('.popup__button').textContent = "Сохранить";
+  })
 }
 
-function cardFormSubmit(evt) {
+function submitCardForm(evt) {
   evt.preventDefault(); 
   newCardPopup.querySelector('.popup__button').textContent = "Сохранение...";
-  newCard(placeName, linkURL)
+  loadNewCard(placeName, linkURL)
   .then((result) => {
-    const newCard = addCard(cardTemplate, result, clickCard);
+    const newCard = addCard(cardTemplate, result, clickCard, likeCard, deleteCard, userID);
     placesList.prepend(newCard);
-    closeModal(newCardPopup);
     clearValidation(newCardPopup, validationConfig);
   })
   .catch((err) => {
     console.log(err); 
-  }); 
+  })
+  .finally(() => {
+    closeModal(newCardPopup);
+    newCardPopup.querySelector('.popup__button').textContent = "Сохранить";
+  })
 }
 
-function avatarFormSubmit(evt) {
+function submitAvatarForm(evt) {
   evt.preventDefault(); 
   avatarPopup.querySelector('.popup__button').textContent = "Сохранение...";
-  newAvatar(avatarURL)
+  loadNewAvatar(avatarURL)
   .then((result) => {
     profileImage.style.backgroundImage = `url('${result.avatar}')`;
-    closeModal(avatarPopup);
     clearValidation(avatarPopup, validationConfig);
   })
   .catch((err) => {
     console.log(err); 
-  }); 
+  })
+  .finally(() => {
+    closeModal(avatarPopup);
+    avatarPopup.querySelector('.popup__button').textContent = "Сохранить";
+  })
 }
 
-editForm.addEventListener('submit', profileFormSubmit);
-newCardForm.addEventListener('submit', cardFormSubmit);
-avatarForm.addEventListener('submit', avatarFormSubmit);
+editForm.addEventListener('submit', submitProfileForm);
+newCardForm.addEventListener('submit', submitCardForm);
+avatarForm.addEventListener('submit', submitAvatarForm);
 
 editButton.addEventListener('click', function(evt) {
   evt.stopPropagation();

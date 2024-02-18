@@ -1,4 +1,6 @@
-function addCard(cardTemplate, initialCard, clickCard) {
+import {removeCard, putLike, removeLike} from '../components/api.js';
+
+function addCard(cardTemplate, initialCard, clickCard, likeCard, deleteCard, userID) {
     const newCard = cardTemplate.content.querySelector('.card').cloneNode(true);
     const deleteElement = newCard.querySelector('.card__delete-button');
     const likeElement = newCard.querySelector('.card__like-button');
@@ -6,9 +8,9 @@ function addCard(cardTemplate, initialCard, clickCard) {
     const cardImage = newCard.querySelector('.card__image');
     cardImage.src = initialCard.link;
     cardImage.alt = initialCard.name;
-    if(initialCard.owner._id != '1cebd42a12c2c9befb1391c9')
+    if(initialCard.owner._id != userID)
         deleteElement.style.visibility = 'hidden';
-    if(initialCard.likes.find(node => node._id == '1cebd42a12c2c9befb1391c9')) {
+    if(initialCard.likes.find(node => node._id == userID)) {
         likeElement.classList.toggle('card__like-button_is-active');
     }
     newCard.querySelector('.card__title').textContent = initialCard.name;
@@ -20,40 +22,35 @@ function addCard(cardTemplate, initialCard, clickCard) {
 }
 
 const deleteCard = function(currentCard, cardID) {
-    currentCard.remove();
-    return fetch(`https://nomoreparties.co/v1/wff-cohort-6/cards/${cardID}`, {
-        method: 'DELETE',
-        headers: {
-          authorization: '14623f3a-7681-4149-84a8-6e2abb29c429'
-        }
-      })
+    removeCard(cardID)
+    .then((result) => {
+      currentCard.remove();      
+    })
+    .catch((err) => {
+      console.log(err); 
+    }); 
 }
 
 const likeCard = function(likeElement, likeCounter, cardID) {
-    likeElement.classList.toggle('card__like-button_is-active');
     if(likeElement.classList.contains('card__like-button_is-active')) {
-      return fetch(`https://nomoreparties.co/v1/wff-cohort-6/cards/likes/${cardID}`, {
-        method: 'PUT',
-        headers: {
-          authorization: '14623f3a-7681-4149-84a8-6e2abb29c429'
-        }
-      })
-        .then(res => res.json())
+        removeLike(cardID)
         .then((result) => {
+            likeElement.classList.toggle('card__like-button_is-active');
             likeCounter.textContent = result.likes.length;       
+        }) 
+        .catch((err) => {
+          console.log(err); 
         }); 
     }
     else {
-        return fetch(`https://nomoreparties.co/v1/wff-cohort-6/cards/likes/${cardID}`, {
-            method: 'DELETE',
-            headers: {
-              authorization: '14623f3a-7681-4149-84a8-6e2abb29c429'
-            }
-          })
-            .then(res => res.json())
-            .then((result) => {
-                likeCounter.textContent = result.likes.length;       
-            }); 
+        putLike(cardID)
+        .then((result) => {
+          likeElement.classList.toggle('card__like-button_is-active');
+          likeCounter.textContent = result.likes.length;       
+        })
+        .catch((err) => {
+          console.log(err); 
+        }); 
     }
 }  
 

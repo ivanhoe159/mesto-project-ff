@@ -1,7 +1,5 @@
 const noSymbols = /[^а-яёa-z\s\-]/i; 
 const errorSymbols = "Разрешены только латинские, кириллические буквы, знаки дефиса и пробелы.";
-const nameInput = document.querySelector('#popup__input_type_name');
-const placeName = document.querySelector('#popup__input_type_card-name');
 
 function showInputError(formElement, inputElement, errorMessage, validationConfig) {
     const errorElement = formElement.querySelector(`.${inputElement.id}-error`);
@@ -42,7 +40,7 @@ function showInputError(formElement, inputElement, errorMessage, validationConfi
     } else {
       hideInputError(formElement, inputElement, validationConfig);
       isFormValid(formElement, validationConfig);
-      if(inputElement == nameInput || inputElement == placeName)
+      if(inputElement.classList.contains(`${validationConfig.noSymbolsSelector}`))
         isValidSymbol(formElement, inputElement, validationConfig);
     }
   };
@@ -58,7 +56,6 @@ function showInputError(formElement, inputElement, errorMessage, validationConfi
     const formButton = formElement.querySelector(`${validationConfig.submitButtonSelector}`);
     const spanList = Array.from(formElement.querySelectorAll(`${validationConfig.errorClass}`));
     const inputList = Array.from(formElement.querySelectorAll(`${validationConfig.inputSelector}`));
-    formButton.textContent = "Сохранить";
     formButton.disabled = true;
     spanList.forEach((spanElement) => {
       spanElement.textContent = '';
